@@ -5,32 +5,41 @@ This project consists of a RESTful API in Python that provides CRUD functionalit
 
 ## Features
 - CRUD operations for City data.
-- Managing city alliances.
+- Managing bidirectional city alliances.
 - Calculating allied power based on city population and distance.
 
 ## Requirements
 - Python
 - FastAPI
 - SQLAlchemy
+- Psycopg
 - PostgreSQL
 - Docker
 
 ## Running the Application
 
-### Using Docker
-Ensure Docker and Docker Compose are installed on your machine. 
+### Using Docker 
 
-1. To build and run the application directly with Docker:
+1. To run the application using Docker Compose with a preconfigured PostgreSQL database:
     ```bash
-    docker build -t city-api .
-    docker run -p 1337:1337 city-api
-    ```
-
-2. To run the application using Docker Compose with a preconfigured PostgreSQL database:
-    ```bash
-    docker-compose up
+    docker-compose up --build
     ```
     This will start the API service on `localhost:8080` and the PostgreSQL database.
+
+2. To build and run the application directly with Docker:
+    ```bash
+    docker build -t city-api .
+    docker run -p 8080:1337 city-api
+    ```
+   Make sure to set the environment varaibles before running the docker
+
+## Configuration
+The API uses environment variables for configuration. Make sure to set the following:
+- `PGHOST`
+- `PGPORT`
+- `PGUSER`
+- `PGPASSWORD`
+- `PGDATABASE`
 
 ## API Endpoints
 - `POST cities/`: Create a new city.
@@ -71,13 +80,6 @@ Ensure Docker and Docker Compose are installed on your machine.
   - Type: Integer
   - Constraints: Range from 1 to 1 billion.
 
-## Configuration
-The API uses environment variables for configuration. Make sure to set the following:
-- `PGHOST`
-- `PGPORT`
-- `PGUSER`
-- `PGPASSWORD`
-- `PGDATABASE`
 
 ## Database Schema
 ```sql
@@ -103,4 +105,90 @@ CREATE TABLE city_alliances (
 ```
 
 ## Additional Information
-For any additional concerns or specific implementation details, please refer to the provided classes and the assessment task description.
+For any additional concerns or specific implementation details, please refer to the provided classes.
+
+## Security Audit Report
+
+### Bandit Report
+
+Last scanned: `2024-01-07`
+
+#### Summary
+- **Python Version**: 3.10.11
+- **Total Lines of Code**: 689
+- **Total Lines Skipped** (`#nosec`): 0
+
+#### Issues by Severity
+- **Undefined**: 0
+- **Low**: 0
+- **Medium**: 0
+- **High**: 0
+
+#### Issues by Confidence
+- **Undefined**: 0
+- **Low**: 0
+- **Medium**: 0
+- **High**: 0
+
+#### Conclusion
+No security issues identified in the current codebase.
+
+
+# Task Results
+
+The `tasks` folder contains test cities and code for the execution, which generated the following results:
+
+## City Creation Results
+
+- **Berlin Created**: 
+```json
+{
+'name': 'Berlin',
+'geo_location_latitude': 52.52001,
+'geo_location_longitude': 13.40495,
+'beauty': 'Gorgeous',
+'population': 3645000,
+'city_uuid': '7e8bafc6-e481-4885-85b2-c3d79ccbf355',
+'alliances': []
+}
+```
+- **New York Created**:
+```json
+{
+'name': 'New York',
+'geo_location_latitude': 40.71278,
+'geo_location_longitude': -74.00594,
+'beauty': 'Gorgeous',
+'population': 8419000,
+'city_uuid': '4020fb51-27c9-4d02-9928-532d8e2631c0',
+'alliances': [{'allied_city_uuid': '7e8bafc6-e481-4885-85b2-c3d79ccbf355'}]
+}
+```
+- **Munich Created**: 
+```json
+{
+'name': 'Munich',
+'geo_location_latitude': 48.13512,
+'geo_location_longitude': 11.58198,
+'beauty': 'Gorgeous',
+'population': 1472000,
+'city_uuid': '2c1a751d-4d92-4828-ad93-7870f374dc6d',
+'alliances': [{'allied_city_uuid': '7e8bafc6-e481-4885-85b2-c3d79ccbf355'}]
+}
+```
+
+## State of Each City After Initial Creation
+
+| City      | Alliances         |
+|-----------|-------------------|
+| Berlin    | New York, Munich  |
+| New York  | Berlin            |
+| Munich    | Berlin            |
+
+## State of Each City After Updating New York's Alliances
+
+| City      | Alliances             |
+|-----------|-----------------------|
+| Berlin    | Munich                |
+| New York  | Munich                |
+| Munich    | Berlin, New York      |

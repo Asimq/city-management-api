@@ -3,10 +3,10 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
 from schemas.city_schema import CityCreate, CityDisplay, CityDisplayPower, CityPatch
 from schemas.pagination_schema import PaginationParams, PaginatedResponseModel
 from services.city_service import CityService
+
 from config.db_postg import get_db
 
 router = APIRouter()
@@ -20,7 +20,9 @@ async def create_city(city: CityCreate, db: Session = Depends(get_db)):
     Returns the newly created city with uuid.
     """
     try:
-        return CityService.create_city(db, city.dict(exclude={"alliances"}), city.alliances)
+        return CityService.create_city(
+            db, city.dict(exclude={"alliances"}), city.alliances
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
@@ -29,7 +31,9 @@ async def create_city(city: CityCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=PaginatedResponseModel)
-async def read_cities(pagination: PaginationParams = Depends(), db: Session = Depends(get_db)):
+async def read_cities(
+    pagination: PaginationParams = Depends(), db: Session = Depends(get_db)
+):
     """
     Retrieve cities with pagination.
     Returns a list of cities, the total count, page size,
@@ -42,7 +46,7 @@ async def read_cities(pagination: PaginationParams = Depends(), db: Session = De
             page=pagination.page,
             page_size=pagination.page_size,
             total_pages=total_pages,
-            cities=[CityDisplay.from_orm(city) for city in cities]
+            cities=[CityDisplay.from_orm(city) for city in cities],
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -67,7 +71,9 @@ async def read_city(city_uuid: UUID, db: Session = Depends(get_db)):
 
 
 @router.patch("/{city_uuid}", response_model=CityDisplay)
-async def update_city(city_uuid: UUID, city_update: CityPatch, db: Session = Depends(get_db)):
+async def update_city(
+    city_uuid: UUID, city_update: CityPatch, db: Session = Depends(get_db)
+):
     """
     Update a city. Modifies details of a specific city in the database.
     Only updates the fields provided in the request.

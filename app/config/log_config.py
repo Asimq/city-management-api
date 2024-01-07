@@ -11,6 +11,6 @@ def setup_logging():
     """
     logging.basicConfig(
         level=logging.ERROR,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s '
-               '(%(filename)s:%(lineno)d, %(funcName)s)'
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s "
+        "(%(filename)s:%(lineno)d, %(funcName)s)",
     )

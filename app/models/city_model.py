@@ -3,8 +3,15 @@ import uuid
 import enum
 from datetime import datetime
 
-from sqlalchemy import (Column, Integer, String, Float, Enum as SQLAlchemyEnum,
-    ForeignKey, BigInteger, DateTime
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    Enum as SQLAlchemyEnum,
+    ForeignKey,
+    BigInteger,
+    DateTime,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -17,7 +24,8 @@ Base = declarative_base()
 
 
 class BeautyEnum(enum.Enum):
-    """ Enumeration for beauty ratings of a city. """
+    """Enumeration for beauty ratings of a city."""
+
     Ugly = "Ugly"
     Average = "Average"
     Gorgeous = "Gorgeous"
@@ -38,25 +46,19 @@ class City(Base):
         created_at (DateTime): Record creation timestamp.
         updated_at (DateTime): Record update timestamp.
     """
-    __tablename__ = 'city'
-    city_uuid = Column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-        )
+
+    __tablename__ = "city"
+    city_uuid = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, nullable=False)
     geo_location_latitude = Column(Float, nullable=False)
     geo_location_longitude = Column(Float, nullable=False)
-    beauty = Column(
-        SQLAlchemyEnum(BeautyEnum, name='beauty_type'),
-        nullable=False
-        )
+    beauty = Column(SQLAlchemyEnum(BeautyEnum, name="beauty_type"), nullable=False)
     population = Column(BigInteger, nullable=False)
-    alliances = relationship("CityAlliances", 
-                             foreign_keys="CityAlliances.city_uuid", 
-                             back_populates="city")
+    alliances = relationship(
+        "CityAlliances", foreign_keys="CityAlliances.city_uuid", back_populates="city"
+    )
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-        )
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class CityAlliances(Base):
@@ -71,19 +73,16 @@ class CityAlliances(Base):
         created_at (DateTime): Record creation timestamp.
         updated_at (DateTime): Record update timestamp.
     """
-    __tablename__ = 'city_alliances'
+
+    __tablename__ = "city_alliances"
     alliance_id = Column(Integer, primary_key=True)
     city_uuid = Column(
-        UUID(as_uuid=True), ForeignKey('city.city_uuid'),
-        nullable=False, index=True
-        )
+        UUID(as_uuid=True), ForeignKey("city.city_uuid"), nullable=False, index=True
+    )
     allied_city_uuid = Column(
-        UUID(as_uuid=True), ForeignKey('city.city_uuid'),
-        nullable=False, index=True
-        )
-    city = relationship("City", 
-                        foreign_keys=[city_uuid],
-                        back_populates="alliances")
+        UUID(as_uuid=True), ForeignKey("city.city_uuid"), nullable=False, index=True
+    )
+    city = relationship("City", foreign_keys=[city_uuid], back_populates="alliances")
     created_at = Column(DateTime, default=datetime.utcnow)
 
 

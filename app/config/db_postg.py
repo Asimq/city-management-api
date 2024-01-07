@@ -43,6 +43,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base class for declarative class definitions
 Base = declarative_base()
 
+
 def get_engine():
     """
     Retrieve the SQLAlchemy engine.
@@ -51,6 +52,7 @@ def get_engine():
         The SQLAlchemy engine connected to the database.
     """
     return engine
+
 
 def get_db() -> Session:
     """
