@@ -52,10 +52,10 @@ class AlliedPowerService:
         for allied_city in allied_cities:
             try:
                 distance = AlliedPowerService.calculate_distance(
-                    city.geo_location_latitude, 
-                    city.geo_location_longitude, 
-                    allied_city.geo_location_latitude, 
-                    allied_city.geo_location_longitude
+                    city.geo_location_latitude,
+                    city.geo_location_longitude,
+                    allied_city.geo_location_latitude,
+                    allied_city.geo_location_longitude,
                 )
                 allied_population = allied_city.population
                 if distance > 10000:
@@ -65,8 +65,6 @@ class AlliedPowerService:
 
                 allied_power += allied_population
             except Exception as e:
-                logging.error(
-                    f"Error in calculating distance for allied cities: {e}"
-                )
+                logging.error(f"Error in calculating distance for allied cities: {e}")
                 raise
         return allied_power

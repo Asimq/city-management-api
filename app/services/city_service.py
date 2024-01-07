@@ -28,16 +28,13 @@ class CityService:
         try:
             if alliances:
                 AllianceValidationService.validate_alliance(
-                    db, city_data, alliances, 
-                    include_self_alliance_check=False
+                    db, city_data, alliances, include_self_alliance_check=False
                 )
             new_city = CityRepository.add_city(db, city_data)
             db.commit()
             db.refresh(new_city)
             if alliances:
-                AllianceService.add_city_alliances(
-                    db, new_city.city_uuid, alliances
-                )
+                AllianceService.add_city_alliances(db, new_city.city_uuid, alliances)
                 db.commit()
             success = True
             return new_city
@@ -64,9 +61,7 @@ class CityService:
         total_count = CityRepository.count_cities(db)
         total_pages = ceil(total_count / pagination.page_size)
         if pagination.page > total_pages and total_count > 0:
-            raise ValueError(
-                f"Page must be less than or equal to {total_pages}"
-            )
+            raise ValueError(f"Page must be less than or equal to {total_pages}")
         skip = (pagination.page - 1) * pagination.page_size
         cities = CityRepository.get_cities(db, skip, pagination.page_size)
         return cities, total_count, total_pages
@@ -78,9 +73,7 @@ class CityService:
         """
         city = CityRepository.get_city_by_uuid(db, city_uuid)
         if city:
-            city.allied_power = AlliedPowerService.calculate_allied_power(
-                db, city
-            )
+            city.allied_power = AlliedPowerService.calculate_allied_power(db, city)
             return city
         else:
             raise ValueError("City not found")
@@ -96,13 +89,15 @@ class CityService:
         update_data = city_update.dict(exclude_unset=True)
         if update_data:
             try:
-                if 'alliances' in update_data:
+                if "alliances" in update_data:
                     AllianceValidationService.validate_alliance(
-                        db, city, update_data['alliances'], 
-                        include_self_alliance_check=True
+                        db,
+                        city,
+                        update_data["alliances"],
+                        include_self_alliance_check=True,
                     )
                     AllianceService.update_city_alliances(
-                        db, city, update_data.pop('alliances')
+                        db, city, update_data.pop("alliances")
                     )
                 if update_data:
                     CityRepository.update_city(db, city, update_data)

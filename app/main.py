@@ -7,8 +7,4 @@ setup_logging()
 
 app = FastAPI()
 
-app.include_router(
-    city_router.router,
-    prefix="/cities",
-    tags=["cities"]
-)
+app.include_router(city_router.router, prefix="/cities", tags=["cities"])
