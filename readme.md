@@ -86,7 +86,7 @@ The API uses environment variables for configuration. Make sure to set the follo
 CREATE TYPE beauty_type AS ENUM ('Ugly', 'Average', 'Gorgeous');
 
 CREATE TABLE city (
-    city_uuid UUID PRIMARY KEY,
+    city_uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR NOT NULL,
     geo_location_latitude FLOAT NOT NULL,
     geo_location_longitude FLOAT NOT NULL,
